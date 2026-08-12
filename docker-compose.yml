@@ -1,0 +1,10 @@
+services:
+  cypress:
+    build: .
+    volumes:
+      # Mount Cypress run artifacts out of the container so they survive after run
+      - ./cypress/screenshots:/app/cypress/screenshots
+      - ./cypress/videos:/app/cypress/videos
+    environment:
+      # Chromium flags required when running inside a Docker container
+      - ELECTRON_DISABLE_SECURITY_WARNINGS=true

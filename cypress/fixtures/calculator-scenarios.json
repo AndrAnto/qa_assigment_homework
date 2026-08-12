@@ -1,0 +1,89 @@
+{
+  "division": [
+    {
+      "description": "divides two whole numbers evenly",
+      "keys": ["6", "/", "2", "Enter"],
+      "expected": "3",
+      "category": "happy"
+    },
+    {
+      "description": "divides two numbers that produce a decimal result",
+      "keys": ["7", "/", "2", "Enter"],
+      "expected": "3.5",
+      "category": "happy"
+    },
+    {
+      "description": "produces a repeating decimal, truncated/rounded to the display precision",
+      "keys": ["1", "/", "3", "Enter"],
+      "expected": "0.33333333",
+      "category": "edge"
+    },
+    {
+      "description": "shows an Error when dividing by zero",
+      "keys": ["5", "/", "0", "Enter"],
+      "expected": "Error",
+      "category": "negative"
+    },
+    {
+      "description": "supports chained division operations",
+      "keys": ["1", "0", "0", "/", "5", "/", "2", "Enter"],
+      "expected": "10",
+      "category": "edge"
+    }
+  ],
+  "subtraction": [
+    {
+      "description": "subtracts two positive numbers",
+      "keys": ["9", "-", "4", "Enter"],
+      "expected": "5",
+      "category": "happy"
+    },
+    {
+      "description": "produces a negative result when subtracting a larger number",
+      "keys": ["4", "-", "9", "Enter"],
+      "expected": "-5",
+      "category": "edge"
+    },
+    {
+      "description": "supports decimal subtraction",
+      "keys": ["5", ".", "5", "-", "2", ".", "2", "Enter"],
+      "expected": "3.3",
+      "category": "happy"
+    },
+    {
+      "description": "supports chained subtraction operations",
+      "keys": ["2", "0", "-", "5", "-", "3", "Enter"],
+      "expected": "12",
+      "category": "edge"
+    },
+    {
+      "description": "returns to 0 when subtracting a number from itself",
+      "keys": ["8", "-", "8", "Enter"],
+      "expected": "0",
+      "category": "edge"
+    }
+  ],
+  "clearSimple": [
+    {
+      "description": "resets the display back to 0 after entering a number",
+      "keys": ["7", "4"],
+      "expected": "0",
+      "category": "happy"
+    },
+    {
+      "description": "resets the display back to 0 after completing a calculation",
+      "keys": ["1", "2", "+", "8", "Enter"],
+      "expected": "0",
+      "category": "happy"
+    }
+  ],
+  "clearAndContinue": [
+    {
+      "description": "allows a new calculation to be entered immediately after clearing",
+      "keysBeforeClear": ["9", "9"],
+      "keysAfterClear": ["5", "+", "5", "Enter"],
+      "expected": "10",
+      "category": "happy"
+    }
+  ]
+}
