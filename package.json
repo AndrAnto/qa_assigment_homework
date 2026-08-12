@@ -1,0 +1,24 @@
+{
+  "private": true,
+  "scripts": {
+    "test": "cypress run",
+    "test:open": "cypress open",
+    "test:spec": "cypress run --spec",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "verify": "npm run lint && npm run format:check && npm test"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.67.0",
+    "@typescript-eslint/parser": "^8.67.0",
+    "cypress": "^15.20.1",
+    "eslint": "^10.8.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-cypress": "^7.0.0",
+    "eslint-plugin-prettier": "^5.5.6",
+    "prettier": "^3.9.6",
+    "typescript": "^5.6.3"
+  }
+}
