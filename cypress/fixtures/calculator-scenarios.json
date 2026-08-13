@@ -75,6 +75,12 @@
       "keys": ["1", "2", "+", "8", "Enter"],
       "expected": "0",
       "category": "happy"
+    },
+    {
+      "description": "resets the display back to 0 when clearing mid-operator entry",
+      "keys": ["9", "-"],
+      "expected": "0",
+      "category": "edge"
     }
   ],
   "clearAndContinue": [
@@ -84,6 +90,13 @@
       "keysAfterClear": ["5", "+", "5", "Enter"],
       "expected": "10",
       "category": "happy"
+    },
+    {
+      "description": "recovers from an Error state and allows a new calculation after clearing",
+      "keysBeforeClear": ["5", "/", "0", "Enter"],
+      "keysAfterClear": ["3", "+", "2", "Enter"],
+      "expected": "5",
+      "category": "negative"
     }
   ]
 }

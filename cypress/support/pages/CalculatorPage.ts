@@ -1,29 +1,24 @@
-// Page Object for the Full Screen Online Calculator (https://www.online-calculator.com/full-screen-calculator/).
-//
-// The calculator UI is rendered on an HTML5 <canvas> (CreateJS/EaselJS) inside a
-// same-origin iframe, so there are no clickable DOM buttons to target. The app
-// does, however, listen for real keyboard events on `document` inside that
-// iframe, so this page object drives the calculator via keyboard input and
-// reads the calculator's internal display state (`exportRoot.showscreen_txt.text`),
-// which mirrors exactly what's shown on screen.
 
-const CALCULATOR_URL = 'https://www.online-calculator.com/full-screen-calculator/';
+// Relative to `baseUrl` in cypress.config.ts, which is overridable via `--config baseUrl=...` for CI resilience
+// (this repo disables `Cypress.env()`, so baseUrl is the supported override mechanism).
+const CALCULATOR_PATH = '/full-screen-calculator/';
 
-/** A single input→output calculator test case, as stored in the fixture. */
-export interface CalculatorScenario {
+/** Fields shared by every scenario shape stored in the fixture. */
+export interface BaseScenario {
   description: string;
-  keys: string[];
   expected: string;
   category: 'happy' | 'negative' | 'edge';
 }
 
+/** A single input→output calculator test case, as stored in the fixture. */
+export interface CalculatorScenario extends BaseScenario {
+  keys: string[];
+}
+
 /** A test case that clears mid-sequence and continues with a new calculation, as stored in the fixture. */
-export interface ClearAndContinueScenario {
-  description: string;
+export interface ClearAndContinueScenario extends BaseScenario {
   keysBeforeClear: string[];
   keysAfterClear: string[];
-  expected: string;
-  category: 'happy' | 'negative' | 'edge';
 }
 
 /** Minimal shape of the CreateJS scene graph this page object depends on. */
@@ -59,7 +54,7 @@ const queryIframe = () => cy.get('iframe', { timeout: 10000, log: false });
 export const CalculatorPage = {
   /** Navigates to the calculator page. */
   visit(): void {
-    cy.visit(CALCULATOR_URL);
+    cy.visit(CALCULATOR_PATH);
   },
 
   /** Returns the iframe's `window` once the CreateJS app has initialized. */

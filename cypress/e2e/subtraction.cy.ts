@@ -1,17 +1,12 @@
 import { CalculatorPage, CalculatorScenario } from '../support/pages/CalculatorPage';
+import { runCalculatorScenarios } from '../support/runScenarios';
 import scenarios from '../fixtures/calculator-scenarios.json';
 
-describe('Subtraction', () => {
+describe('Subtraction tests', () => {
   beforeEach(() => {
     CalculatorPage.visit();
     CalculatorPage.assertDisplay('0');
   });
 
-  (scenarios.subtraction as CalculatorScenario[]).forEach((scenario) => {
-    it(`[${scenario.category}] ${scenario.description}`, () => {
-      CalculatorPage.typeSequence(scenario.keys);
-
-      CalculatorPage.assertDisplay(scenario.expected);
-    });
-  });
+  runCalculatorScenarios(scenarios.subtraction as CalculatorScenario[]);
 });
