@@ -7,4 +7,4 @@ RUN npm ci --ignore-scripts
 
 COPY . .
 
-ENTRYPOINT ["npx", "cypress", "run"]
+ENTRYPOINT ["npx", "cypress", "run", "--env", "allure=true"]
