@@ -25,22 +25,28 @@ interface CalculatorWindow extends Window {
   };
 }
 
-const dispatchKeydown = (win: CalculatorWindow, keyCode: number): void => {
-  const event = new win.KeyboardEvent('keydown', { bubbles: true, cancelable: true });
+/** Any window-like object keyboard events can be dispatched on (the iframe's or the parent's). */
+interface KeyboardTarget {
+  KeyboardEvent: typeof KeyboardEvent;
+  document: Document;
+}
+
+const dispatchKeydown = (target: KeyboardTarget, keyCode: number): void => {
+  const event = new target.KeyboardEvent('keydown', { bubbles: true, cancelable: true });
   Object.defineProperty(event, 'which', { get: () => keyCode });
   Object.defineProperty(event, 'keyCode', { get: () => keyCode });
-  win.document.dispatchEvent(event);
+  target.document.dispatchEvent(event);
 };
 
-const dispatchKeypress = (win: CalculatorWindow, char: string): void => {
+const dispatchKeypress = (target: KeyboardTarget, char: string): void => {
   const code = char === 'Enter' ? 13 : char.charCodeAt(0);
-  const event = new win.KeyboardEvent('keypress', { bubbles: true });
+  const event = new target.KeyboardEvent('keypress', { bubbles: true });
   Object.defineProperty(event, 'which', { get: () => code });
   Object.defineProperty(event, 'keyCode', { get: () => code });
-  win.document.dispatchEvent(event);
+  target.document.dispatchEvent(event);
 };
 
-const queryIframe = () => cy.get('iframe', { timeout: 10000, log: false });
+const queryIframe = () => cy.get('iframe#fullframe', { timeout: 10000, log: false });
 
 export const CalculatorPage = {
   /** Navigates to the full-screen calculator page. */
@@ -51,6 +57,11 @@ export const CalculatorPage = {
   /** Resizes the browser viewport. Call before `visit()` for a true responsive load. */
   setViewport(width: number, height: number): void {
     cy.viewport(width, height);
+  },
+
+  /** Reloads the page, forcing the calculator iframe to reinitialize from scratch. */
+  reload(): void {
+    cy.reload();
   },
 
   /** Resolves once the calculator iframe has finished initializing its script. */
@@ -100,6 +111,24 @@ export const CalculatorPage = {
   /** Types a sequence of keys, one keypress event per entry. */
   typeSequence(keys: string[]): void {
     keys.forEach((key) => this.pressKey(key));
+  },
+
+  /** Clicks the iframe element itself, giving it real browser focus before typing. */
+  focusCalculatorFrame(): void {
+    queryIframe().click({ force: true });
+  },
+
+  /** Clicks the parent page, moving focus away from the calculator iframe. */
+  focusParentPage(): void {
+    cy.get('body').click({ force: true });
+  },
+
+  /** Dispatches keypresses on the parent page's own document, never touching the iframe. */
+  typeSequenceOnParentDocument(keys: string[]): void {
+    cy.document().then((doc) => {
+      const parentWindow = doc.defaultView as unknown as KeyboardTarget;
+      keys.forEach((key) => dispatchKeypress(parentWindow, key));
+    });
   },
 
   /**

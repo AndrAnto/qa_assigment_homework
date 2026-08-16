@@ -70,14 +70,21 @@ Screenshots and videos produced by the run are written to `./cypress/screenshots
 ```
 cypress/
   e2e/
-    features/                     # Gherkin feature files (one scenario per test case, TC01-TC15)
-      iframe-loading.feature
-      arithmetic-operations.feature
-      error-handling.feature
-      editing-controls.feature
-      keyboard-support.feature
-      responsive-ui.feature
-      session-stability.feature
+    features/                     # Gherkin feature files, grouped by calculator functionality (TC01-TC30)
+      iframe.feature               # TC01, TC27 - iframe load & reload
+      addition.feature             # TC02
+      subtraction.feature          # TC03, TC20
+      multiplication.feature       # TC04
+      division.feature             # TC05, TC06, TC30
+      decimal.feature              # TC07, TC17, TC18, TC23
+      zero.feature                 # TC19
+      clear.feature                # TC09
+      backspace.feature            # TC10
+      operators.feature            # TC08, TC11
+      keyboard.feature             # TC12, TC13, TC28, TC29
+      boundaries.feature           # TC16, TC21, TC22
+      calculation-state.feature    # TC15, TC24, TC25, TC26
+      responsive.feature           # TC14
   support/
     pages/CalculatorPage.ts       # Page object - all calculator interactions/assertions
     step_definitions/
@@ -94,4 +101,9 @@ Discovered while writing these tests and verified directly against the live app:
 - **Division by zero** shows `Error`, and the calculator remains fully usable afterwards.
 - **`c` is a Clear keyboard shortcut**, not corrupting/invalid input — it behaves exactly like pressing Clear.
 - A bare leading `-` is not rendered as a negative sign (`-`, `4` displays `4`, not `-4`); use `0-4=` to reliably obtain a displayed `-4` for a negative operand. This is a minor UI quirk, noted for future reference.
+- **Maximum display length is 9 digits** (grouped in threes, e.g. `123 456 789`); a 10th digit is silently rejected. A computed result that overflows 9 digits switches to scientific notation (e.g. `1e+9`).
+- **Chained calculations are supported**: pressing an operator right after `=` continues from the previous result (`5+5=` → `10`, then `*2=` → `20`).
+- **Pressing `=` again repeats the last operation** against the current result (`5+2=` → `7`, then `=` again → `9`).
+- The calculator's keyboard handling is **global to the page**, not gated behind the iframe having DOM focus — typing still reaches the calculator even if focus is elsewhere on the page.
+- The calculator iframe has a stable selector: `iframe#fullframe` (the page also contains several ad/consent iframes, so a bare `iframe` selector is ambiguous).
 

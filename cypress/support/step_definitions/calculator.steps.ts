@@ -23,6 +23,22 @@ When('I type {string} using the keyboard', (expression: string) => {
   CalculatorPage.typeSequence(toKeys(expression));
 });
 
+When('I type {string} on the parent page', (expression: string) => {
+  CalculatorPage.typeSequenceOnParentDocument(toKeys(expression));
+});
+
+When('I reload the calculator page', () => {
+  CalculatorPage.reload();
+});
+
+When('I click inside the calculator iframe', () => {
+  CalculatorPage.focusCalculatorFrame();
+});
+
+When('I click outside the calculator iframe', () => {
+  CalculatorPage.focusParentPage();
+});
+
 When('I press Clear', () => {
   CalculatorPage.pressClear();
 });

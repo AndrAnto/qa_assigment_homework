@@ -1,8 +1,11 @@
-Feature: Responsive layout
+@calculator @responsive
+Feature: Calculator responsive layout
+
   The calculator and its iframe must remain visible and fully usable at
   both desktop and mobile viewport sizes.
 
-  Scenario Outline: TC14 - Calculator stays usable on <device> viewports
+  @TC14
+  Scenario Outline: Calculator stays usable on <device> viewports
     Given the viewport is set to <width>x<height>
     And the calculator is loaded
     Then the calculator iframe is visible and ready
