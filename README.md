@@ -94,16 +94,41 @@ cypress/
 
 ## Documented, non-obvious calculator behaviour
 
-Discovered while writing these tests and verified directly against the live app:
+Discovered issues:
+### 1. Incorrect Percentage Calculation with Multiplication
+**Steps:** Enter `200 × 10%`
+**Expected:** `20`
+**Actual:** `4000`
+**Issue:** The calculator incorrectly treats `10%` as `20` instead of `0.1` during multiplication.
 
-- **Operator precedence is honoured**: `2 + 3 × 4` = `14` (multiplication before addition), not `20`. This matches standard mathematical order of operations and is correct, expected behaviour — not a defect.
-- **A second operator replaces a pending one**: `8 + × 2` = `16` (the `×` discards the pending `+`).
-- **Division by zero** shows `Error`, and the calculator remains fully usable afterwards.
-- **`c` is a Clear keyboard shortcut**, not corrupting/invalid input — it behaves exactly like pressing Clear.
-- A bare leading `-` is not rendered as a negative sign (`-`, `4` displays `4`, not `-4`); use `0-4=` to reliably obtain a displayed `-4` for a negative operand. This is a minor UI quirk, noted for future reference.
-- **Maximum display length is 9 digits** (grouped in threes, e.g. `123 456 789`); a 10th digit is silently rejected. A computed result that overflows 9 digits switches to scientific notation (e.g. `1e+9`).
-- **Chained calculations are supported**: pressing an operator right after `=` continues from the previous result (`5+5=` → `10`, then `*2=` → `20`).
-- **Pressing `=` again repeats the last operation** against the current result (`5+2=` → `7`, then `=` again → `9`).
-- The calculator's keyboard handling is **global to the page**, not gated behind the iframe having DOM focus — typing still reaches the calculator even if focus is elsewhere on the page.
-- The calculator iframe has a stable selector: `iframe#fullframe` (the page also contains several ad/consent iframes, so a bare `iframe` selector is ambiguous).
+### 2. Incorrect Percentage Calculation with Division
+**Steps:** Enter `200 ÷ 10%`
+**Expected:** `2000`
+**Actual:** `10`
+**Issue:** The calculator incorrectly calculates the percentage relative to the first operand before performing division.
 
+### 3. Incorrect `0 ÷ 100` Result
+**Steps:** Enter `0 ÷ 100 =`
+**Expected:** `0`
+**Actual:** `Error`
+**Issue:** Dividing zero by a non-zero number should return `0`, not an error.
+### 4. Unexpected Operator Precedence in Basic Calculator
+**Steps:** Enter `2 + 3 × 6 =`
+**Expected:** `30` for a basic sequential calculator (`2 + 3 = 5`, then `5 × 6 = 30`)
+**Actual:** `20`
+**Issue:** The basic calculator applies mathematical operator precedence without clearly indicating this behavior to the user.
+### 5. Silent 9-Digit Input Limit
+**Steps:** Enter 10 digits.
+**Expected:** The calculator should either accept the input or clearly indicate that the maximum digit limit has been reached.
+**Actual:** The 10th digit is silently ignored and the display remains capped at 9 digits.
+**Issue:** There is no feedback explaining why additional input is rejected.
+### 6. Backspace Does Not Work at 9-Digit Limit
+**Steps:** Enter `999999999`, then press Backspace.
+**Expected:** The display should change from `999 999 999` to `99 999 999`.
+**Actual:** Backspace has no effect.
+**Issue:** Backspace works normally below the 9-digit limit but fails when the display is at the maximum length.
+### 7. Repeated `=` Re-applies the Last Operation
+**Steps:** Enter `7 + 2 =`, then press `=` again.
+**Expected:** The display should remain `9`.
+**Actual:** The calculator performs `9 + 2` and changes the result to `11`.
+**Issue:** Pressing `=` repeatedly re-applies the last operator and operand instead of leaving the completed result unchanged.
